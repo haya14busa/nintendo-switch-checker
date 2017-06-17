@@ -108,6 +108,16 @@ var sources = []nschecker.Source{
 		URL:         "https://www.toysrus.co.jp/s/dsg-572186500",
 		SoldOutText: `<span id="isStock_c" >在庫なし/入荷予定あり</span>`,
 	},
+	{
+		Name:        "tsutaya - Nintendo Switch Joy-Con (L) / (R) グレー",
+		URL:         "http://shop.tsutaya.co.jp/Nintendo-Switch-Joy-Con-L-R-%E3%82%B0%E3%83%AC%E3%83%BC-HACSKAAAA/product-game-4902370535709/",
+		SoldOutText: `<img src="/library/img/base/ic/btn_nostockL.png" alt="在庫なし" />`,
+	},
+	{
+		Name:        "tsutaya - Nintendo Switch Joy-Con (L) ネオンブルー/ (R) ネオンレッド",
+		URL:         "http://shop.tsutaya.co.jp/Nintendo-Switch-Joy-Con-L-%E3%83%8D%E3%82%AA%E3%83%B3%E3%83%96%E3%83%AB%E3%83%BC-R-%E3%83%8D%E3%82%AA%E3%83%B3%E3%83%AC%E3%83%83%E3%83%89-HACSKABAA/product-game-4902370535716/",
+		SoldOutText: `<img src="/library/img/base/ic/btn_nostockL.png" alt="在庫なし" />`,
+	},
 }
 
 const usageMessage = "" +
