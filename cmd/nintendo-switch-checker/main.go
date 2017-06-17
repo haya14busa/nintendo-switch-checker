@@ -222,9 +222,11 @@ func (n *Notifier) Notify(state nschecker.State, s nschecker.Source) error {
 		n.statesMu.Unlock()
 	}()
 	n.statesMu.Lock()
-	oldState := n.states[s.URL]
+	oldState, ok := n.states[s.URL]
 	n.statesMu.Unlock()
-
+	if !ok && state == nschecker.SOLDOUT {
+		return nil
+	}
 	if oldState == state {
 		log.Printf("same state: %v url=%v name=%v", state, s.URL, s.Name)
 		return nil
