@@ -54,6 +54,26 @@ var sources = []nschecker.Source{
 		URL:         "http://joshinweb.jp/game/40519/4902370535716.html",
 		SoldOutText: `<span class="fsL"><font color="blue"><b>販売休止中です</b></font><br></span>`,
 	},
+	{
+		Name:        "omni7(7net) - Nintendo Switch Joy-Con (L) / (R) グレー",
+		URL:         "http://7net.omni7.jp/detail/2110595636",
+		SoldOutText: `<input class="linkBtn js-pressTwice" type="submit" value="在庫切れ" title="在庫切れ"`,
+	},
+	{
+		Name:        "omni7(7net) - Nintendo Switch Joy-Con (L) ネオンブルー/ (R) ネオンレッド",
+		URL:         "http://7net.omni7.jp/detail/2110595637",
+		SoldOutText: `<input class="linkBtn js-pressTwice" type="submit" value="在庫切れ" title="在庫切れ"`,
+	},
+	{
+		Name:        "omni7(iyec) - Nintendo Switch Joy-Con (L) / (R) グレー",
+		URL:         "http://iyec.omni7.jp/detail/4902370535709",
+		SoldOutText: `<input class="linkBtn js-pressTwice" type="submit" value="在庫切れ" title="在庫切れ"`,
+	},
+	{
+		Name:        "omni7(iyec) - Nintendo Switch Joy-Con (L) ネオンブルー/ (R) ネオンレッド",
+		URL:         "http://iyec.omni7.jp/detail/4902370535716",
+		SoldOutText: `<input class="linkBtn js-pressTwice" type="submit" value="在庫切れ" title="在庫切れ"`,
+	},
 }
 
 const usageMessage = "" +
