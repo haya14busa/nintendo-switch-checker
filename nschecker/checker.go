@@ -50,7 +50,8 @@ func Check(s Source) (State, error) {
 	var reader io.Reader = resp.Body
 
 	contentType := resp.Header.Get("Content-Type")
-	if strings.Contains(contentType, "charset=Windows-31J") {
+	if strings.Contains(contentType, "charset=Windows-31J") ||
+		strings.Contains(contentType, "charset=shift_jis") {
 		reader = transform.NewReader(reader, japanese.ShiftJIS.NewDecoder())
 	}
 

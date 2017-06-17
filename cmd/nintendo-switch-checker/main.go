@@ -118,6 +118,11 @@ var sources = []nschecker.Source{
 		URL:         "http://shop.tsutaya.co.jp/Nintendo-Switch-Joy-Con-L-%E3%83%8D%E3%82%AA%E3%83%B3%E3%83%96%E3%83%AB%E3%83%BC-R-%E3%83%8D%E3%82%AA%E3%83%B3%E3%83%AC%E3%83%83%E3%83%89-HACSKABAA/product-game-4902370535716/",
 		SoldOutText: `<img src="/library/img/base/ic/btn_nostockL.png" alt="在庫なし" />`,
 	},
+	{
+		Name:        "sofmap - Nintendo Switch",
+		URL:         "http://www.sofmap.com/topics/exec/?id=5500",
+		SoldOutText: `<IMG src="/images/system_icon/zaiko06.gif" alt="在庫切れ" border="0">`,
+	},
 }
 
 const usageMessage = "" +
