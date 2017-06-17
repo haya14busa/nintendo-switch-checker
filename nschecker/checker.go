@@ -2,7 +2,6 @@ package nschecker
 
 import (
 	"bufio"
-	"bytes"
 	"io"
 	"net/http"
 	"strings"
@@ -52,9 +51,7 @@ func Check(s Source) (State, error) {
 
 	contentType := resp.Header.Get("Content-Type")
 	if strings.Contains(contentType, "charset=Windows-31J") {
-		buf := new(bytes.Buffer)
-		convertShiftJIS(resp.Body, buf)
-		reader = buf
+		reader = transform.NewReader(reader, japanese.ShiftJIS.NewDecoder())
 	}
 
 	scanner := bufio.NewScanner(reader)
@@ -71,9 +68,4 @@ func Check(s Source) (State, error) {
 		return SOLDOUT, nil
 	}
 	return AVAILABLE, nil
-}
-
-func convertShiftJIS(in io.Reader, out io.Writer) error {
-	_, err := io.Copy(out, transform.NewReader(in, japanese.ShiftJIS.NewDecoder()))
-	return err
 }
