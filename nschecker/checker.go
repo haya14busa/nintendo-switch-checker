@@ -53,6 +53,8 @@ func Check(s Source) (State, error) {
 	if strings.Contains(contentType, "charset=Windows-31J") ||
 		strings.Contains(contentType, "charset=shift_jis") {
 		reader = transform.NewReader(reader, japanese.ShiftJIS.NewDecoder())
+	} else if strings.Contains(contentType, "charset=EUC-JP") {
+		reader = transform.NewReader(reader, japanese.EUCJP.NewDecoder())
 	}
 
 	scanner := bufio.NewScanner(reader)
