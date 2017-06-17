@@ -229,7 +229,11 @@ func (n *Notifier) Notify(state nschecker.State, s nschecker.Source) error {
 		log.Printf("same state: %v url=%v name=%v", state, s.URL, s.Name)
 		return nil
 	}
-	msg := fmt.Sprintf("%v: %v (%v)", state, s.URL, s.Name)
+	channel := ""
+	if state == nschecker.AVAILABLE {
+		channel = "<!channel|channel> "
+	}
+	msg := fmt.Sprintf("%s%v: %v (%v)", channel, state, s.URL, s.Name)
 	params := slack.PostMessageParameters{EscapeText: false}
 	if !debugNotify {
 		return nil
