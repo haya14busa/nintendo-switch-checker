@@ -126,42 +126,42 @@ var sources = []nschecker.Source{
 	{
 		Name:        "rakuten - Nintendo Switch Joy-Con(L)/(R) グレー + ゼルダの伝説　ブレス オブ ザ ワイルド Nintendo Switch版",
 		URL:         "http://books.rakuten.co.jp/rb/14779136/",
-		SoldOutText: `<span class="status">ご注文できない商品*`,
+		SoldOutText: `<span class="status">ご注文できない商品`,
 	},
 	{
 		Name:        "rakuten - Nintendo Switch Joy-Con(L)/(R) グレー + マリオカート8 デラックス",
 		URL:         "http://books.rakuten.co.jp/rb/14785337/",
-		SoldOutText: `<span class="status">ご注文できない商品*`,
+		SoldOutText: `<span class="status">ご注文できない商品`,
 	},
 	{
 		Name:        "rakuten - Nintendo Switch Joy-Con(L)/(R) グレー 楽天あんしん延長保証",
 		URL:         "http://books.rakuten.co.jp/rb/14655634/",
-		SoldOutText: `<span class="status">ご注文できない商品*`,
+		SoldOutText: `<span class="status">ご注文できない商品`,
 	},
 	{
 		Name:        "rakuten - Nintendo Switch Joy-Con(L) ネオンブルー/(R) ネオンレッド 楽天あんしん延長保証",
 		URL:         "http://books.rakuten.co.jp/rb/14655635/",
-		SoldOutText: `<span class="status">ご注文できない商品*`,
+		SoldOutText: `<span class="status">ご注文できない商品`,
 	},
 	{
 		Name:        "rakuten - Nintendo Switch Joy-Con(L) ネオンブルー/(R) ネオンレッド + マリオカート8 デラックス",
 		URL:         "http://books.rakuten.co.jp/rb/14787497/",
-		SoldOutText: `<span class="status">ご注文できない商品*`,
+		SoldOutText: `<span class="status">ご注文できない商品`,
 	},
 	{
 		Name:        "rakuten - Nintendo Switch Joy-Con(L) ネオンブルー/(R) ネオンレッド + 1-2-Switch ",
 		URL:         "http://books.rakuten.co.jp/rb/14779141/",
-		SoldOutText: `<span class="status">ご注文できない商品*`,
+		SoldOutText: `<span class="status">ご注文できない商品`,
 	},
 	{
 		Name:        "rakuten - Nintendo Switch Joy-Con(L)/(R) グレー",
 		URL:         "http://books.rakuten.co.jp/rb/14647221/",
-		SoldOutText: `<span class="status">ご注文できない商品*`,
+		SoldOutText: `<span class="status">ご注文できない商品`,
 	},
 	{
 		Name:        "rakuten - Nintendo Switch Joy-Con(L) ネオンブルー/(R) ネオンレッド",
 		URL:         "http://books.rakuten.co.jp/rb/14647222/",
-		SoldOutText: `<span class="status">ご注文できない商品*`,
+		SoldOutText: `<span class="status">ご注文できない商品`,
 	},
 }
 
