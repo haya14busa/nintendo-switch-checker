@@ -170,7 +170,17 @@ var sources = []nschecker.Source{
 const usageMessage = "" +
 	`Usage:	nintendo-switch-checker [flags]
 
+	Set notification token by environment variable.
+
 	export SLACK_API_TOKEN=<SLACK_API_TOKEN>
+	# or
+	export LINE_NOTIFY_TOKEN=<LINE_NOTIFY_TOKEN>
+
+	### How to get LINE_NOTIFY_TOKEN
+	1. Go to https://notify-bot.line.me/ and LOGIN
+	3. Go to my page https://notify-bot.line.me/my/
+	4. Click "Generate token" and input token name and select target.
+	5. $ LINE_NOTIFY_TOKEN=xxxxxx nintendo-switch-checker -notifier=line
 `
 
 func main() {
