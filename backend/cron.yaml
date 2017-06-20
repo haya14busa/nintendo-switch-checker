@@ -2,4 +2,3 @@ cron:
 - description: "check job"
   url: /
   schedule: every 1 minutes
-  
