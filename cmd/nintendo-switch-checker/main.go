@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"sync"
 	"time"
@@ -16,6 +17,7 @@ var (
 	interval = flag.Duration("interval", 1*time.Minute, "Check interval")
 	channel  = flag.String("channel", "", "Slack channel name where checker posts comments")
 	once     = flag.Bool("once", false, "Check once")
+	notifier = flag.String("notifier", "", "Notifier target, slack or line")
 )
 
 const (
@@ -178,18 +180,41 @@ func main() {
 		flag.PrintDefaults()
 	}
 	flag.Parse()
-	token := os.Getenv("SLACK_API_TOKEN")
-	if token == "" {
-		log.Println("Please set environment variable SLACK_API_TOKEN")
-		return
-	}
-	if *channel == "" {
-		log.Println("Please set -channel flag")
+
+	if *notifier == "" {
+		log.Println("Please set -notifier=slack (or line)")
 		return
 	}
 
+	var n nschecker.Notifier
+	switch *notifier {
+	default:
+		log.Printf("Not support notifier: %s", *notifier)
+		return
+	case "slack":
+		tok := os.Getenv("SLACK_API_TOKEN")
+		if tok == "" {
+			log.Println("Please set environment variable SLACK_API_TOKEN")
+			return
+		}
+		if *channel == "" {
+			log.Println("Please set -slack-channel flag")
+			return
+		}
+
+		n = nschecker.NewSlackNotifier(slack.New(tok), *channel)
+	case "line":
+		tok := os.Getenv("LINE_NOTIFY_TOKEN")
+		if tok == "" {
+			log.Println("Please set environment variable LINE_NOTIFY_TOKEN")
+			return
+		}
+
+		n = nschecker.NewLineNotifier(http.DefaultClient, tok)
+	}
+
 	c := &Checker{
-		Notifier: NewNotifier(slack.New(token), *channel),
+		Notifier: n,
 		Interval: *interval,
 		Once:     *once,
 	}
@@ -199,7 +224,7 @@ func main() {
 }
 
 type Checker struct {
-	Notifier *Notifier
+	Notifier nschecker.Notifier
 	Interval time.Duration
 	Once     bool
 }
@@ -240,51 +265,4 @@ func (c *Checker) check(s nschecker.Source) {
 	if err := c.Notifier.Notify(state, s); err != nil {
 		log.Printf("fail to notify: %v", err)
 	}
-}
-
-type Notifier struct {
-	Cli *slack.Client
-
-	channel string
-
-	// url -> current state
-	statesMu sync.Mutex
-	states   map[string]nschecker.State
-}
-
-func NewNotifier(cli *slack.Client, channel string) *Notifier {
-	return &Notifier{
-		Cli:     cli,
-		channel: channel,
-		states:  make(map[string]nschecker.State),
-	}
-}
-
-func (n *Notifier) Notify(state nschecker.State, s nschecker.Source) error {
-	defer func() {
-		n.statesMu.Lock()
-		n.states[s.URL] = state
-		n.statesMu.Unlock()
-	}()
-	n.statesMu.Lock()
-	oldState, ok := n.states[s.URL]
-	n.statesMu.Unlock()
-	if !ok && state == nschecker.SOLDOUT {
-		return nil
-	}
-	if oldState == state {
-		log.Printf("same state: %v url=%v name=%v", state, s.URL, s.Name)
-		return nil
-	}
-	channel := ""
-	if state == nschecker.AVAILABLE {
-		channel = "<!channel|channel> "
-	}
-	msg := fmt.Sprintf("%s%v: %v (%v)", channel, state, s.URL, s.Name)
-	params := slack.PostMessageParameters{EscapeText: false}
-	if !debugNotify {
-		return nil
-	}
-	_, _, err := n.Cli.PostMessage(n.channel, msg, params)
-	return err
 }
