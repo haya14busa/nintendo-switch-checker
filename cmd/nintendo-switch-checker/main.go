@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/haya14busa/nintendo-switch-checker/nschecker"
-	"github.com/nlopes/slack"
 )
 
 var (
@@ -69,7 +68,7 @@ func main() {
 			return
 		}
 
-		n = nschecker.NewSlackNotifier(slack.New(tok), *channel)
+		n = nschecker.NewSlackNotifier(http.DefaultClient, tok, *channel)
 	case "line":
 		tok := os.Getenv("LINE_NOTIFY_TOKEN")
 		if tok == "" {

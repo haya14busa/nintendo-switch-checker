@@ -9,8 +9,6 @@ import (
 	"net/url"
 
 	"strings"
-
-	"github.com/nlopes/slack"
 )
 
 // Notifier interface is construct an response.
@@ -20,8 +18,8 @@ type Notifier interface {
 
 // SlackNotifier struct is construct an slack message.
 type SlackNotifier struct {
-	Cli *slack.Client
-
+	hc      *http.Client
+	tok     string
 	channel string
 
 	// url -> current state
@@ -29,9 +27,10 @@ type SlackNotifier struct {
 	states   map[string]State
 }
 
-func NewSlackNotifier(cli *slack.Client, channel string) Notifier {
+func NewSlackNotifier(hc *http.Client, tok string, channel string) Notifier {
 	return &SlackNotifier{
-		Cli:     cli,
+		hc:      hc,
+		tok:     tok,
 		channel: channel,
 		states:  make(map[string]State),
 	}
@@ -58,8 +57,24 @@ func (n *SlackNotifier) Notify(state State, s Source) error {
 		channel = "<!channel|channel> "
 	}
 	msg := fmt.Sprintf("%s%v: %v (%v)", channel, state, s.URL, s.Name)
-	params := slack.PostMessageParameters{EscapeText: false}
-	_, _, err := n.Cli.PostMessage(n.channel, msg, params)
+	v := url.Values{}
+	v.Set("token", n.tok)
+	v.Set("channel", n.channel)
+	v.Set("text", msg)
+
+	r, err := http.NewRequest("POST", "https://slack.com/api/chat.postMessage", strings.NewReader(v.Encode()))
+	if err != nil {
+		return err
+	}
+
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	res, err := n.hc.Do(r)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
 	return err
 }
 

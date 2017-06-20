@@ -1,0 +1,13 @@
+runtime: go
+api_version: go1
+
+# env_variables:
+#   SLACK_API_TOKEN: 
+#   SLACK_CHANNEL: 
+#   LINE_NOTIFY_TOKEN: 
+
+handlers:
+- url: /.*
+  script: _go_app
+  login: admin
+  
