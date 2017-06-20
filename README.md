@@ -8,7 +8,7 @@ nintendo-switch-checker crawls bunch of online shopping sites and notify you whe
 ### Installation
 
 ```
-$ go get -u github.com/haya14busa/reviewdog/cmd/reviewdog
+$ go get -u github.com/haya14busa/nintendo-switch-checker/cmd/nintendo-switch-checker
 ```
 
 ### Usage
