@@ -25,8 +25,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		wg.Add(1)
 		go func(s nschecker.Source) {
 			defer wg.Done()
-			err := check(ctx, hc, s)
-			if err != nil {
+			if err := check(ctx, hc, s); err != nil {
 				log.Errorf(ctx, "Check failed: %s: %v", s.Name, err)
 				return
 			}
@@ -47,7 +46,7 @@ func check(ctx context.Context, hc *http.Client, s nschecker.Source) error {
 		return err
 	}
 
-	state, err := nschecker.Check(s, nschecker.HTTPClient(hc))
+	state, err := nschecker.Check(s, hc)
 	if err != nil {
 		return err
 	}
@@ -62,7 +61,6 @@ func newNotifier(ctx context.Context, hc *http.Client) (nschecker.Notifier, erro
 		if channel == "" {
 			return nil, errors.New("Please set enviroment variable SLACK_CHANNEL")
 		}
-
 		return nschecker.NewSlackNotifier(hc, tok, channel), nil
 	}
 

@@ -40,27 +40,12 @@ func (s State) String() string {
 	return "Unknown state"
 }
 
-type CheckOption func(*checkOptions)
-
-type checkOptions struct {
-	hc *http.Client
-}
-
-func HTTPClient(hc *http.Client) CheckOption {
-	return func(o *checkOptions) {
-		o.hc = hc
-	}
-}
-
-func Check(s Source, opts ...CheckOption) (State, error) {
-	opt := &checkOptions{
-		hc: http.DefaultClient,
-	}
-	for _, o := range opts {
-		o(opt)
+func Check(s Source, hc *http.Client) (State, error) {
+	if hc == nil {
+		hc = http.DefaultClient
 	}
 
-	resp, err := opt.hc.Get(s.URL)
+	resp, err := hc.Get(s.URL)
 	if err != nil {
 		return ERROR, err
 	}

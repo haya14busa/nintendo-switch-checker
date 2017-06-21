@@ -11,12 +11,12 @@ import (
 	"strings"
 )
 
-// Notifier interface is construct an response.
+// Notifier is interface of notification
 type Notifier interface {
 	Notify(state State, s Source) error
 }
 
-// SlackNotifier struct is construct an slack message.
+// SlackNotifier handles notification to slack
 type SlackNotifier struct {
 	hc      *http.Client
 	tok     string
@@ -78,7 +78,7 @@ func (n *SlackNotifier) Notify(state State, s Source) error {
 	return err
 }
 
-// LineNotifier struct is construct an LINE message.
+// LineNotifier handles notification to LINE.
 type LineNotifier struct {
 	hc  *http.Client
 	tok string
@@ -133,7 +133,7 @@ func (n *LineNotifier) Notify(state State, s Source) error {
 	return nil
 }
 
-// SlackWebhookNotifier struct is construct an slack incoming webhook message.
+// SlackWebhookNotifier handles notification to slack incoming webhook.
 type SlackWebhookNotifier struct {
 	hc      *http.Client
 	url     string

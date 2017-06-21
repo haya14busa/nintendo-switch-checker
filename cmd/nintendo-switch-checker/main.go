@@ -87,7 +87,7 @@ func main() {
 		}
 
 		if *channel == "" {
-			log.Println("Please set -slack-channel flag")
+			log.Println("Please set -channel flag")
 			return
 		}
 
@@ -138,7 +138,7 @@ func (c *Checker) runChecks() {
 }
 
 func (c *Checker) check(s nschecker.Source) {
-	state, err := nschecker.Check(s)
+	state, err := nschecker.Check(s, nil)
 	if err != nil {
 		log.Printf("Check failed: %s: %v", s.Name, err)
 	}
