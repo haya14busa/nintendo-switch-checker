@@ -18,13 +18,13 @@ See `$ nintendo-switch-checker -h` for detail.
 
 ## Run on Google App Engine
 
-1. Edit backend/app.yaml, Set SLACK_API_TOKEN or LINE_NOTIFY_TOKEN
+1. Edit server/app.yaml, Set SLACK_API_TOKEN or LINE_NOTIFY_TOKEN
 2. Deploy!
 
 ```bash
 $ goapp deploy
 or
-$ gcloud app deploy backend/app.yaml backend/cron.yaml
+$ gcloud app deploy server/app.yaml server/cron.yaml
 ```
 
 fyi: https://cloud.google.com/appengine/docs/standard/go/quickstart
