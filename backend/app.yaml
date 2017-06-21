@@ -5,6 +5,7 @@ api_version: go1
 #   SLACK_API_TOKEN: 
 #   SLACK_CHANNEL: 
 #   LINE_NOTIFY_TOKEN: 
+#   SLACK_WEBHOOK_URL: 
 
 handlers:
 - url: /.*

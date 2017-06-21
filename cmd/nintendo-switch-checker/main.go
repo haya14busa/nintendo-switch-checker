@@ -31,6 +31,8 @@ const usageMessage = "" +
 	export SLACK_API_TOKEN=<SLACK_API_TOKEN>
 	# or
 	export LINE_NOTIFY_TOKEN=<LINE_NOTIFY_TOKEN>
+	# or
+	export SLACK_WEBHOOK_URL=<SLACK_WEBHOOK_URL>
 
 	### How to get LINE_NOTIFY_TOKEN
 	1. Go to https://notify-bot.line.me/ and LOGIN
@@ -77,6 +79,19 @@ func main() {
 		}
 
 		n = nschecker.NewLineNotifier(http.DefaultClient, tok)
+	case "slack-webhook":
+		url := os.Getenv("SLACK_WEBHOOK_URL")
+		if url == "" {
+			log.Println("Please set environment variable SLACK_WEBHOOK_URL")
+			return
+		}
+
+		if *channel == "" {
+			log.Println("Please set -slack-channel flag")
+			return
+		}
+
+		n = nschecker.NewSlackWebhookNotifier(http.DefaultClient, url, *channel)
 	}
 
 	c := &Checker{

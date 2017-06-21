@@ -71,5 +71,14 @@ func newNotifier(ctx context.Context, hc *http.Client) (nschecker.Notifier, erro
 		return nschecker.NewLineNotifier(hc, tok), nil
 	}
 
+	url := os.Getenv("SLACK_WEBHOOK_URL")
+	if url != "" {
+		channel := os.Getenv("SLACK_CHANNEL")
+		if channel == "" {
+			return nil, errors.New("Please set enviroment variable SLACK_CHANNEL")
+		}
+		return nschecker.NewSlackWebhookNotifier(hc, url, channel), nil
+	}
+
 	return nil, errors.New("Not notify token")
 }

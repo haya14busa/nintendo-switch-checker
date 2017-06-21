@@ -132,3 +132,64 @@ func (n *LineNotifier) Notify(state State, s Source) error {
 
 	return nil
 }
+
+// SlackWebhookNotifier struct is construct an slack incoming webhook message.
+type SlackWebhookNotifier struct {
+	hc      *http.Client
+	url     string
+	channel string
+
+	// url -> current state
+	statesMu sync.Mutex
+	states   map[string]State
+}
+
+func NewSlackWebhookNotifier(hc *http.Client, url, channel string) Notifier {
+	return &SlackWebhookNotifier{
+		hc:      hc,
+		url:     url,
+		channel: channel,
+		states:  make(map[string]State),
+	}
+}
+
+func (n *SlackWebhookNotifier) Notify(state State, s Source) error {
+	defer func() {
+		n.statesMu.Lock()
+		n.states[s.URL] = state
+		n.statesMu.Unlock()
+	}()
+	n.statesMu.Lock()
+	oldState, ok := n.states[s.URL]
+	n.statesMu.Unlock()
+	if !ok && state == SOLDOUT {
+		return nil
+	}
+	if oldState == state {
+		log.Printf("same state: %v url=%v name=%v", state, s.URL, s.Name)
+		return nil
+	}
+	channel := ""
+	if state == AVAILABLE {
+		channel = "<!channel|channel> "
+	}
+	msg := fmt.Sprintf("%s%v: %v (%v)", channel, state, s.URL, s.Name)
+	r, err := http.NewRequest("POST", n.url, strings.NewReader(`{
+		"channel": "`+n.channel+`",
+		"username": "switch-checker",
+		"text": "`+msg+`"
+	}'`))
+	if err != nil {
+		return err
+	}
+
+	r.Header.Set("Content-Type", "application/json")
+
+	res, err := n.hc.Do(r)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	return err
+}
