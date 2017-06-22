@@ -6,6 +6,8 @@ import (
 	"os"
 	"sync"
 
+	"strings"
+
 	"github.com/haya14busa/nintendo-switch-checker/nschecker"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
@@ -22,6 +24,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	hc := urlfetch.Client(ctx)
 	var wg sync.WaitGroup
 	for _, s := range nschecker.Sources {
+		// TODO:
+		// Yodobashi and Joshin is not work on GAE.
+		// https://github.com/haya14busa/nintendo-switch-checker/pull/3#issuecomment-309968587
+		if strings.HasPrefix(s.Name, "Yodobashi") || strings.HasPrefix(s.Name, "Joshin") {
+			continue
+		}
 		wg.Add(1)
 		go func(s nschecker.Source) {
 			defer wg.Done()
