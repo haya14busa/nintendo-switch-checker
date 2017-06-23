@@ -9,19 +9,17 @@ import (
 	"net/url"
 
 	"strings"
-
-	"github.com/nlopes/slack"
 )
 
-// Notifier interface is construct an response.
+// Notifier is interface of notification
 type Notifier interface {
 	Notify(state State, s Source) error
 }
 
-// SlackNotifier struct is construct an slack message.
+// SlackNotifier handles notification to slack
 type SlackNotifier struct {
-	Cli *slack.Client
-
+	hc      *http.Client
+	tok     string
 	channel string
 
 	// url -> current state
@@ -29,9 +27,10 @@ type SlackNotifier struct {
 	states   map[string]State
 }
 
-func NewSlackNotifier(cli *slack.Client, channel string) Notifier {
+func NewSlackNotifier(hc *http.Client, tok string, channel string) Notifier {
 	return &SlackNotifier{
-		Cli:     cli,
+		hc:      hc,
+		tok:     tok,
 		channel: channel,
 		states:  make(map[string]State),
 	}
@@ -58,12 +57,28 @@ func (n *SlackNotifier) Notify(state State, s Source) error {
 		channel = "<!channel|channel> "
 	}
 	msg := fmt.Sprintf("%s%v: %v (%v)", channel, state, s.URL, s.Name)
-	params := slack.PostMessageParameters{EscapeText: false}
-	_, _, err := n.Cli.PostMessage(n.channel, msg, params)
+	v := url.Values{}
+	v.Set("token", n.tok)
+	v.Set("channel", n.channel)
+	v.Set("text", msg)
+
+	r, err := http.NewRequest("POST", "https://slack.com/api/chat.postMessage", strings.NewReader(v.Encode()))
+	if err != nil {
+		return err
+	}
+
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	res, err := n.hc.Do(r)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
 	return err
 }
 
-// LineNotifier struct is construct an LINE message.
+// LineNotifier handles notification to LINE.
 type LineNotifier struct {
 	hc  *http.Client
 	tok string
@@ -116,4 +131,65 @@ func (n *LineNotifier) Notify(state State, s Source) error {
 	defer res.Body.Close()
 
 	return nil
+}
+
+// SlackWebhookNotifier handles notification to slack incoming webhook.
+type SlackWebhookNotifier struct {
+	hc      *http.Client
+	url     string
+	channel string
+
+	// url -> current state
+	statesMu sync.Mutex
+	states   map[string]State
+}
+
+func NewSlackWebhookNotifier(hc *http.Client, url, channel string) Notifier {
+	return &SlackWebhookNotifier{
+		hc:      hc,
+		url:     url,
+		channel: channel,
+		states:  make(map[string]State),
+	}
+}
+
+func (n *SlackWebhookNotifier) Notify(state State, s Source) error {
+	defer func() {
+		n.statesMu.Lock()
+		n.states[s.URL] = state
+		n.statesMu.Unlock()
+	}()
+	n.statesMu.Lock()
+	oldState, ok := n.states[s.URL]
+	n.statesMu.Unlock()
+	if !ok && state == SOLDOUT {
+		return nil
+	}
+	if oldState == state {
+		log.Printf("same state: %v url=%v name=%v", state, s.URL, s.Name)
+		return nil
+	}
+	channel := ""
+	if state == AVAILABLE {
+		channel = "<!channel|channel> "
+	}
+	msg := fmt.Sprintf("%s%v: %v (%v)", channel, state, s.URL, s.Name)
+	r, err := http.NewRequest("POST", n.url, strings.NewReader(`{
+		"channel": "`+n.channel+`",
+		"username": "switch-checker",
+		"text": "`+msg+`"
+	}'`))
+	if err != nil {
+		return err
+	}
+
+	r.Header.Set("Content-Type", "application/json")
+
+	res, err := n.hc.Do(r)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	return err
 }

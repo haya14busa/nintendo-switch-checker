@@ -40,8 +40,12 @@ func (s State) String() string {
 	return "Unknown state"
 }
 
-func Check(s Source) (State, error) {
-	resp, err := http.Get(s.URL)
+func Check(s Source, hc *http.Client) (State, error) {
+	if hc == nil {
+		hc = http.DefaultClient
+	}
+
+	resp, err := hc.Get(s.URL)
 	if err != nil {
 		return ERROR, err
 	}
