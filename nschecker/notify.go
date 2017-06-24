@@ -89,7 +89,7 @@ type LineNotifier struct {
 	states   map[string]State
 }
 
-func NewLineNotifier(hc *http.Client, token string) Notifier {
+func NewLineNotifier(hc *http.Client, token string) *LineNotifier {
 	return &LineNotifier{
 		hc:     hc,
 		tok:    token,
@@ -113,8 +113,11 @@ func (n *LineNotifier) Notify(state State, s Source) error {
 		log.Printf("same state: %v url=%v name=%v", state, s.URL, s.Name)
 		return nil
 	}
-
 	msg := fmt.Sprintf("%v: %v (%v)", state, s.URL, s.Name)
+	return n.SendMessage(msg)
+}
+
+func (n *LineNotifier) SendMessage(msg string) error {
 	v := url.Values{}
 	v.Set("message", msg)
 

@@ -77,8 +77,9 @@ func main() {
 			log.Println("Please set environment variable LINE_NOTIFY_TOKEN")
 			return
 		}
-
-		n = nschecker.NewLineNotifier(http.DefaultClient, tok)
+		lineNotifier := nschecker.NewLineNotifier(http.DefaultClient, tok)
+		lineNotifier.SendMessage("Switch checker started")
+		n = lineNotifier
 	case "slack-webhook":
 		url := os.Getenv("SLACK_WEBHOOK_URL")
 		if url == "" {
