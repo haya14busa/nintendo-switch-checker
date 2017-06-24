@@ -2,6 +2,7 @@ package nschecker
 
 import (
 	"bufio"
+	"errors"
 	"io"
 	"net/http"
 	"strings"
@@ -50,6 +51,10 @@ func Check(s Source, hc *http.Client) (State, error) {
 		return ERROR, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		return ERROR, errors.New(resp.Status)
+	}
 
 	var reader io.Reader = resp.Body
 
