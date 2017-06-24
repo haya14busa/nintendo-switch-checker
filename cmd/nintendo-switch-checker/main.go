@@ -77,9 +77,7 @@ func main() {
 			log.Println("Please set environment variable LINE_NOTIFY_TOKEN")
 			return
 		}
-		lineNotifier := nschecker.NewLineNotifier(http.DefaultClient, tok)
-		lineNotifier.SendMessage("Switch checker started")
-		n = lineNotifier
+		n = nschecker.NewLineNotifier(http.DefaultClient, tok)
 	case "slack-webhook":
 		url := os.Getenv("SLACK_WEBHOOK_URL")
 		if url == "" {
@@ -111,7 +109,12 @@ type Checker struct {
 	Once     bool
 }
 
+const startupMsg = "Nintendo Switch Checker started"
+
 func (c *Checker) run() error {
+	if err := c.Notifier.SendMessage(startupMsg); err != nil {
+		return fmt.Errorf("failed to send startup msg: %v", err)
+	}
 	if c.Once {
 		c.runChecks()
 		return nil

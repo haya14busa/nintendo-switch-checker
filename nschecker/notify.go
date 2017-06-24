@@ -16,6 +16,7 @@ import (
 // Notifier is interface of notification
 type Notifier interface {
 	Notify(state State, s Source) error
+	SendMessage(msg string) error
 }
 
 // SlackNotifier handles notification to slack
@@ -59,6 +60,10 @@ func (n *SlackNotifier) Notify(state State, s Source) error {
 		channel = "<!channel|channel> "
 	}
 	msg := fmt.Sprintf("%s%v: %v (%v)", channel, state, s.URL, s.Name)
+	return n.SendMessage(msg)
+}
+
+func (n *SlackNotifier) SendMessage(msg string) error {
 	v := url.Values{}
 	v.Set("token", n.tok)
 	v.Set("channel", n.channel)
@@ -184,9 +189,11 @@ func (n *SlackWebhookNotifier) Notify(state State, s Source) error {
 	if state == AVAILABLE {
 		channel = "<!channel|channel> "
 	}
-
 	msg := fmt.Sprintf("%s%v: %v (%v)", channel, state, s.URL, s.Name)
+	return n.SendMessage(msg)
+}
 
+func (n *SlackWebhookNotifier) SendMessage(msg string) error {
 	req := &slackWebhookRequest{
 		Channel:  n.channel,
 		Username: "switch-checker",
