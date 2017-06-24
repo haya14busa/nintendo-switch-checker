@@ -1,6 +1,8 @@
 package nschecker
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"log"
 	"sync"
@@ -153,6 +155,12 @@ func NewSlackWebhookNotifier(hc *http.Client, url, channel string) Notifier {
 	}
 }
 
+type slackWebhookRequest struct {
+	Channel  string `json:"channel"`
+	Username string `json:"username"`
+	Text     string `json:"text"`
+}
+
 func (n *SlackWebhookNotifier) Notify(state State, s Source) error {
 	defer func() {
 		n.statesMu.Lock()
@@ -173,12 +181,19 @@ func (n *SlackWebhookNotifier) Notify(state State, s Source) error {
 	if state == AVAILABLE {
 		channel = "<!channel|channel> "
 	}
+
 	msg := fmt.Sprintf("%s%v: %v (%v)", channel, state, s.URL, s.Name)
-	r, err := http.NewRequest("POST", n.url, strings.NewReader(`{
-		"channel": "`+n.channel+`",
-		"username": "switch-checker",
-		"text": "`+msg+`"
-	}'`))
+
+	req := &slackWebhookRequest{
+		Channel:  n.channel,
+		Username: "switch-checker",
+		Text:     msg,
+	}
+	bs, err := json.Marshal(req)
+	if err != nil {
+		return err
+	}
+	r, err := http.NewRequest("POST", n.url, bytes.NewReader(bs))
 	if err != nil {
 		return err
 	}
