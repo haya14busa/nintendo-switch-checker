@@ -24,10 +24,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	hc := urlfetch.Client(ctx)
 	var wg sync.WaitGroup
 	for _, s := range nschecker.Sources {
-		// TODO:
-		// Yodobashi and Joshin is not work on GAE.
+		// Yodobashi and Joshin does not work on GAE.
 		// https://github.com/haya14busa/nintendo-switch-checker/pull/3#issuecomment-309968587
-		if strings.HasPrefix(s.Name, "Yodobashi") || strings.HasPrefix(s.Name, "Joshin") {
+		if strings.HasPrefix(s.URL, "http://www.yodobashi.com") ||
+			strings.HasPrefix(s.URL, "http://joshinweb.jp") {
 			continue
 		}
 		wg.Add(1)
