@@ -29,7 +29,7 @@ type SlackNotifier struct {
 	states   map[string]State
 }
 
-func NewSlackNotifier(hc *http.Client, tok string, channel string) Notifier {
+func NewSlackNotifier(hc *http.Client, tok string, channel string) *SlackNotifier {
 	return &SlackNotifier{
 		hc:      hc,
 		tok:     tok,
@@ -149,7 +149,7 @@ type SlackWebhookNotifier struct {
 	states   map[string]State
 }
 
-func NewSlackWebhookNotifier(hc *http.Client, url, channel string) Notifier {
+func NewSlackWebhookNotifier(hc *http.Client, url, channel string) *SlackWebhookNotifier {
 	return &SlackWebhookNotifier{
 		hc:      hc,
 		url:     url,
