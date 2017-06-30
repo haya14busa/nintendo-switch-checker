@@ -102,6 +102,18 @@ func NewLineNotifier(hc *http.Client, token string) *LineNotifier {
 }
 
 func (n *LineNotifier) Notify(state State, s Source) error {
+	defer func() {
+		n.statesMu.Lock()
+		n.states[s.URL] = state
+		n.statesMu.Unlock()
+	}()
+	n.statesMu.Lock()
+	oldState, ok := n.states[s.URL]
+	n.statesMu.Unlock()
+	if ok && oldState == state {
+		log.Printf("same state: %v url=%v name=%v", state, s.URL, s.Name)
+		return nil
+	}
 	if state != AVAILABLE {
 		log.Printf("(do not notify) %v url=%v name=%v", state, s.URL, s.Name)
 		return nil
