@@ -96,8 +96,9 @@ type LineNotifier struct {
 
 func NewLineNotifier(hc *http.Client, token string) *LineNotifier {
 	return &LineNotifier{
-		hc:  hc,
-		tok: token,
+		hc:     hc,
+		tok:    token,
+		states: make(map[string]State),
 	}
 }
 
