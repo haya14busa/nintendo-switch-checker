@@ -67,6 +67,16 @@ var Sources = []Source{
 		SoldOutText: `<span>完売御礼</span>`,
 	},
 	{
+		Name:        "yamada - Nintendo Switch Joy-Con (L) / (R) グレー",
+		URL:         "http://www.yamada-denkiweb.com/1177991016",
+		SoldOutText: `<button type="submit" class="btn btn-disabled btn-block" disabled="disabled">売り切れました</button>`,
+	},
+	{
+		Name:        "yamada - Nintendo Switch Joy-Con (L) ネオンブルー/ (R) ネオンレッド",
+		URL:         "http://www.yamada-denkiweb.com/1177992013",
+		SoldOutText: `<button type="submit" class="btn btn-disabled btn-block" disabled="disabled">売り切れました</button>`,
+	},
+	{
 		Name:        "toysrus - Nintendo Switch Joy-Con (L) / (R) グレー",
 		URL:         "https://www.toysrus.co.jp/s/dsg-572182200",
 		SoldOutText: `<span id="isStock_c" >在庫なし/入荷予定あり</span>`,
